@@ -49,7 +49,7 @@ public class BakedItemModel implements IBakedModel
         this.particle = particle;
         this.transforms = transforms;
         this.overrides = overrides;
-        this.guiModel = new BakedGuiItemModel<>( this);
+        this.guiModel = new BakedGuiItemModel<>(this);
     }
 
     @Override public boolean isAmbientOcclusion() { return true; }

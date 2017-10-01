@@ -127,6 +127,7 @@ public final class ModelDynBucket implements IModel
 
         TRSRTransformation transform = state.apply(Optional.empty()).orElse(TRSRTransformation.identity());
         TextureAtlasSprite fluidSprite = null;
+        TextureAtlasSprite particleSprite = null;
         ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 
         if(fluid != null) {
@@ -138,6 +139,7 @@ public final class ModelDynBucket implements IModel
             // build base (insidest)
             IBakedModel model = (new ItemLayerModel(ImmutableList.of(baseLocation))).bake(state, format, bakedTextureGetter);
             builder.addAll(model.getQuads(null, null, 0));
+            particleSprite = model.getParticleTexture();
         }
         if (liquidLocation != null && fluidSprite != null)
         {
@@ -145,17 +147,21 @@ public final class ModelDynBucket implements IModel
             // build liquid layer (inside)
             builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, liquid, fluidSprite, NORTH_Z_FLUID, EnumFacing.NORTH, fluid.getColor()));
             builder.addAll(ItemTextureQuadConverter.convertTexture(format, transform, liquid, fluidSprite, SOUTH_Z_FLUID, EnumFacing.SOUTH, fluid.getColor()));
+            particleSprite = fluidSprite;
         }
         if (coverLocation != null)
         {
             // cover (the actual item around the other two)
-            TextureAtlasSprite base = bakedTextureGetter.apply(coverLocation);
-            builder.add(ItemTextureQuadConverter.genQuad(format, transform, 0, 0, 16, 16, NORTH_Z_COVER, base, EnumFacing.NORTH, 0xffffffff));
-            builder.add(ItemTextureQuadConverter.genQuad(format, transform, 0, 0, 16, 16, SOUTH_Z_COVER, base, EnumFacing.SOUTH, 0xffffffff));
+            TextureAtlasSprite cover = bakedTextureGetter.apply(coverLocation);
+            builder.add(ItemTextureQuadConverter.genQuad(format, transform, 0, 0, 16, 16, NORTH_Z_COVER, cover, EnumFacing.NORTH, 0xffffffff));
+            builder.add(ItemTextureQuadConverter.genQuad(format, transform, 0, 0, 16, 16, SOUTH_Z_COVER, cover, EnumFacing.SOUTH, 0xffffffff));
+            if (particleSprite == null)
+            {
+                particleSprite = cover;
+            }
         }
 
-
-        return new BakedDynBucket(this, builder.build(), fluidSprite, format, Maps.immutableEnumMap(transformMap), Maps.newHashMap());
+        return new BakedDynBucket(this, builder.build(), particleSprite, format, Maps.immutableEnumMap(transformMap), Maps.newHashMap());
     }
 
     /**
