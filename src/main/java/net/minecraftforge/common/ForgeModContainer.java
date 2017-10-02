@@ -112,6 +112,8 @@ public class ForgeModContainer extends DummyModContainer implements WorldAccessC
     public static boolean shouldSortRecipies = true;
     public static boolean disableVersionCheck = false;
     public static boolean forgeLightPipelineEnabled = true;
+    @Deprecated // TODO remove in 1.13
+    public static boolean replaceVanillaBucketModel = true;
     public static boolean zoomInMissingModelTextInGui = false;
     public static boolean disableStairSlabCulling = false; // Also known as the "DontCullStairsBecauseIUseACrappyTexturePackThatBreaksBasicBlockShapesSoICantTrustBasicBlockCulling" flag
     public static boolean alwaysSetupTerrainOffThread = false; // In RenderGlobal.setupTerrain, always force the chunk render updates to be queued to the thread
